@@ -1,6 +1,12 @@
+using Microsoft.AspNetCore.Identity;
+using TransportationApplication.SharedModels;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddIdentity<User, IdentityRole>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
