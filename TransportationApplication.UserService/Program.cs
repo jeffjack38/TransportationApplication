@@ -3,15 +3,17 @@ using TransportationApplication.SharedModels;
 using Microsoft.Extensions.DependencyInjection;
 using TransportationApplication.UserService.Data;
 using Microsoft.EntityFrameworkCore;
+using TransportationApplication.UserService.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+//DbContext connections string
 builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("UserDbContext")));
 
+//IdentityRoles
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<UserDbContext>();
 
@@ -19,6 +21,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+//Register UserServices
+builder.Services.AddScoped<IUserServices, UserServices>();
 
 var app = builder.Build();
 
