@@ -13,15 +13,18 @@ namespace TransportationApplication.UserService.Services
         //dependencies
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
 
         //constructor
         public UserServices(UserManager<User> userManager, 
-            SignInManager<User> signInManager,  
+            SignInManager<User> signInManager, 
+            RoleManager<IdentityRole> roleManager,
             IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _configuration = configuration;
         }
 
@@ -38,13 +41,19 @@ namespace TransportationApplication.UserService.Services
                 return null;
             }
 
-            //retrieve User object for JWT create
+            // Retrieve User object for JWT creation
             var user = await _userManager.FindByEmailAsync(loginViewModel.Email);
 
-            //call GenerateJwtTokenAsync to create the token with user-specific claims
-            //return the generate token to allow the client to use it for auth requests
+            // Check if user is null
+            if (user == null)
+            {
+                return null; // Return null if user cannot be found
+            }
+
+            // Call GenerateJwtTokenAsync to create the token with user-specific claims
             return await GenerateJwtTokenAsync(user);
         }
+
 
         //JWT
         //initialize token handler and key, define claims, add role claims, configure token descriptor,
